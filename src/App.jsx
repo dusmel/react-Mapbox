@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactMapGl from 'react-map-gl';
+import ReactMapGl, { Marker } from 'react-map-gl';
 import logo from './logo.svg';
 import './App.css';
 
@@ -11,26 +11,42 @@ class MapBox extends Component {
       latitude: -1.959630,
       longitude: 30.058069,
       zoom: 16,
-    }
+    },
+    userLocation: {},
+    markerSetted: false,
   };
 
   setUserLocation = () => {
     navigator.geolocation.getCurrentPosition(position => {
-        let newViewport = {
+        const userLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        }
+        const newViewport = {
             height: "100vh",
             width: "100vw",
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            zoom: 12
+            zoom: 17,
+            ...userLocation,
         }
         this.setState({
-            viewport: newViewport
+            viewport: newViewport,
+            userLocation,
+            markerSetted: true,
         });
     });
   }
 
+  pulsingDot () {
+    return (
+      <div class="ring-container">
+          <div class="ringring"></div>
+          <div class="circle"></div>
+      </div>
+    );
+  }
+
   render(){
-    const { viewport } = this.state;
+    const { viewport, markerSetted, userLocation } = this.state;
     return (
       <div className="App">
         <button onClick={this.setUserLocation}>My location</button>
@@ -40,6 +56,13 @@ class MapBox extends Component {
         mapboxApiAccessToken="pk.eyJ1IjoiZHVzbWVsIiwiYSI6ImNrMWtqcnEwbTBjNDkzanBiY2lxc2RnbzMifQ.f6t_g6R1pUpPh7syoVygRA"
         onViewportChange={(userViewport => this.setState({ viewport: userViewport }))}
         >
+          {markerSetted && (
+            <Marker
+              {...userLocation}
+            >
+              {this.pulsingDot()}
+            </Marker>
+          )}
        </ReactMapGl>
       </div>
     );
