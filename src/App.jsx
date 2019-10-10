@@ -49,7 +49,7 @@ class MapBox extends Component {
     const { viewport, markerSetted, userLocation } = this.state;
     return (
       <div className="App">
-        <button onClick={this.setUserLocation}>My location</button>
+        <button onClick={this.setUserLocation} className="my-location">My location</button>
        <ReactMapGl
         {...viewport}
         mapStyle="mapbox://styles/mapbox/streets-v11"
